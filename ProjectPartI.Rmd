@@ -1,0 +1,71 @@
+---
+title: "Central Limit Theorem"
+author: "Ann Crawford"
+highlighter: highlight.js
+output:
+  html_document: default
+  pdf_document: default
+mode: selfcontained
+hitheme: tomorrow
+subtitle: Statistical Inference Project Part I, Class 6 in data science series
+framework: io2012
+url:
+  assets: ../../assets
+  lib: ../../librariesNew
+widgets: mathjax
+---
+## Central Limit Theorem 
+
+- The Central Limit Theorem (CLT) states that the distribution of averages of independent and identically distributed (iid) variables becomes that of a **standard normal** as the sample size increases even if the original variables are not normally distrubted. 
+
+---
+##http://t-redactyl.io/blog/2016/02/creating-plots-in-r-using-ggplot2-part-7-histograms.html
+## Example plotting means
+### CTL demonstartion using 
+```{r ,fig.height=3.5,fig.width=8, fig.align='center', echo = FALSE}
+library(ggplot2)
+lambda <- 0.2
+m <- 40
+n <- 10000 # sample size
+mean1 <- 1/lambda
+stddv <- 1/ lambda
+mm <-data.frame((apply(matrix(rexp(m*n,lambda),nrow = n/m, ncol= n),1,mean)))
+colnames(mm)= c("x")
+    g <- ggplot(mm, aes(x = x))
+    g <- g + geom_histogram(bins = 25) 
+    g <- g + geom_vline(xintercept = 1/lambda, size = 2)
+    g <- g + labs(title = paste('mu = 1/lambda =', 1/lambda ,' sample size = ', n))
+    g
+```
+## Example plotting sd
+### CTL demonstartion using 
+```{r ,fig.height=3.5,fig.width=8, fig.align='center', echo = FALSE}
+library(ggplot2)
+lambda <- 0.2
+m <- 40
+n <- 10000 # sample size
+mean1 <- 1/lambda
+stddv <- 1/ lambda
+mm <-data.frame((apply(matrix(rexp(m*n,lambda),nrow = n/m, ncol= n),1,sd)))
+colnames(mm)= c("x")
+    g <- ggplot(mm, aes(x = x))
+    g <- g + geom_histogram(bins = 25) 
+    g <- g + geom_vline(xintercept = 1/lambda, size = 2)
+    g <- g + labs(title = paste('sd = 1/lambda =', 1/lambda ,' sample size = ', n))
+    g
+```
+---
+## Using manipulate
+```
+library(manipulate)
+myHist <- function(mu){
+  hist(galton$child,col="blue",breaks=100)
+  lines(c(mu, mu), c(0, 150),col="red",lwd=5)
+  mse <- mean((galton$child - mu)^2)
+  text(63, 150, paste("mu = ", mu))
+  text(63, 140, paste("Imbalance = ", round(mse, 2)))
+}
+manipulate(myHist(mu), mu = slider(62, 74, step = 0.5))
+```
+
+---
