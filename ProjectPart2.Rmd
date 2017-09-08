@@ -5,14 +5,12 @@ date: "September 7, 2017"
 output: pdf_document
 subtitle: Statistical Inference Project Part II, Class 6 in data science series
 ---
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 ## Dependencies
 ```r
 ##install.packages("dplyr")
-
 ```
 ## Tooth Growth Data
 The standard R data set, ToothGrowth,  measures the effect of Vitamin C on tooth growth in guinea pigs
@@ -39,7 +37,6 @@ OJ <- ToothGrowth %>% filter(supp=="OJ")
 VC <- ToothGrowth %>% filter(supp=="VC")
 
 t.test(OJ$len, VC$len)
-
 ```
 ----
 ## There are 3 groups of doses, 0.5, 1, 2
