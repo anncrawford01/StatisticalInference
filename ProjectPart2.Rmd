@@ -8,16 +8,23 @@ subtitle: Statistical Inference Project Part II, Class 6 in data science series
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-## Dependencies
-```r
+
+```{r }
+
+# Clear our workspace
+rm(list=ls())
+#Dependencies
 ##install.packages("dplyr")
 ##install.packages("ggplot")
 ##install.packages("gridExtra")
+
+library(magrittr) # for %$% extraction
 library(ggplot2)
 library(grid)
 library(gridExtra)
+library(dplyr)
 ```
-```{r}
+```{r setup}
 # Clear our workspace
 rm(list=ls())
 ```
@@ -47,8 +54,6 @@ Divide the data into two groups, OJ and VC.
 P value is the probablity of observing a test statistic as large as the one calculated assuming H is true.
 
 ```{r, warning=FALSE}
-library(dplyr)
-library(magrittr) # for %$% extraction
 
 OJ <- ToothGrowth %>% filter(supp=="OJ") 
 VC <- ToothGrowth %>% filter(supp=="VC")

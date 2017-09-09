@@ -9,25 +9,32 @@ mode: selfcontained
 hitheme: tomorrow
 subtitle: Statistical Inference Project Part I, Class 6 in data science series
 framework: io2012
-url:
-  assets: ../../assets
-  lib: ../../librariesNew
+#url:
+#  assets: ../../assets
+#  lib: ../../librariesNew
 widgets: mathjax
 ---
-#Snopiss
+```{r }
+# Clear our workspace
+rm(list=ls())
+# dependencies
+install.packages("dplyr",repos = "http://cran.us.r-project.org")
+install.packages("ggplot", repos = "http://cran.us.r-project.org")
+install.packages("gridExtra",repos = "http://cran.us.r-project.org")
+library(ggplot2)
+library(grid)
+library(gridExtra)
+```
 ## Central Limit Theorem 
-The Central Limit Theorem (CLT) states that the distribution of averages of independent and identically distributed (iid) variables becomes that of a **standard normal** as the sample size increases even if the original variables are not normally distrubted.  This document investigates the exponetial distribution, generated using R function rexp and compares it to the CLT. 
+The Central Limit Theorem (CLT) states that the distribution of averages of independent and identically distributed (iid) variables becomes that of a **standard normal** as the sample size increases even if the original variables are not normally distrubted.  This document investigates the exponetial distribution and the distribution on the average of 40 exponetials generated using R function rexp.
 $$\frac{\bar X_n - \mu}{\sigma / \sqrt{n}} = 
     \frac{\mbox{Estimate} - \mbox{Mean of estimate}}{\mbox{Std. Err. of estimate}}.
 $$
 
-```{r}
-# Clear our workspace
-rm(list=ls())
-```
+
 ## The sample mean compared to the theoritical mean
-```{r ,fig.height=3.5,fig.width=8, fig.align='center', echo = FALSE}
-library(ggplot2)
+```{r ,fig.height=3.5,fig.width=8, fig.align='center', echo = FALSE, warning=FALSE}
+
 ## set the seed
 set.seed(1)
 lambda <- 0.2
@@ -43,22 +50,22 @@ colnames(mm)= c("x")
 expsample <-data.frame(expsample)
 colnames(expsample)= c("x")
 
-#par(mfrow = c(1, 2)) 
 library(grid)
 library(gridExtra)
     g <- ggplot(mm, aes(x = x))
     g <- g + geom_histogram(bins = 25) 
-    g <- g + geom_vline(xintercept = 1/lambda, size = 2, color = "red")
-    g <- g + labs(title = paste('mu = 1/lambda =', 1/lambda ,' sample size = ', n))
-   g
+    g <- g + geom_vline(xintercept = 1/lambda, size = 1, color = "red")
+    g <- g + labs(title = paste('mu = 1/lambda =', 1/lambda ,' n = ', n))
+    g
 
-     g2 <- ggplot(data.frame(expsample),aes(x = expsample ))
+    g2 <- ggplot(data.frame(expsample),aes(x = expsample ))
     g2 <- g2 + geom_histogram(bins = 25) 
-    g2 <- g2 + labs(title = paste('Rexp' ,' sample size = ', n))
-   g2
-   grid.arrange(g, g2, ncol = 2, top = "Main title")
+    g2 <- g2 + labs(title = paste('Rexp' ,' n = ', n))
+    g2
+    grid.arrange(g, g2, ncol = 2, top = "Exponetial VS means of 40 ")
 
 ```
+## The sample variance vs theoritical variance
 
 ## Show that the distribution of the sample means is normal
 The histogram shows a distribution with a shape similar to the normal curve. The density proportions shown in the table below are approximately normal.
