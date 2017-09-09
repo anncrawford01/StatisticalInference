@@ -11,6 +11,15 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Dependencies
 ```r
 ##install.packages("dplyr")
+##install.packages("ggplot")
+##install.packages("gridExtra")
+library(ggplot2)
+library(grid)
+library(gridExtra)
+```
+```{r}
+# Clear our workspace
+rm(list=ls())
 ```
 ## Tooth Growth Data
 The standard R data set, ToothGrowth,  measures the effect of Vitamin C on tooth growth in guinea pigs
@@ -21,45 +30,72 @@ methods, (orange juice or ascorbic acid (a form of vitamin C and coded as VC).
 ```{r ToothGrowth}
 summary(ToothGrowth)
 ```
-## Hypotesis Testing
-The sample data graph (see Appednix) implies two Hypothesis: 
+## Hypotesis Testing using T Test.
+Visually examine the sample data graphs (see Appednix). The graphs lend evidence to the t test assumptions.
+Based on the graphs the following Null hypothesi will be tested: 
 1. Supply using orange juice as the delivery method induces longer tooth growth. 
 2. Increase of vitamin C does induces longer tooth growth.
----
-## Testing the affect of supp, delivery method
-Assume Null hypothesis the tooth growth is greater for OJ., **HO: mean OJ -  mean VC  > 0 **
-Divide the data into two groups, OJ and VC. And run an unpaired t test on the groups, unpaired because the data using 60 guinea pigs all independent. 
+* Assumptions for t tests:
++ Data includes trials from 60 independent guinea pigs. 
++ Data are iid normal.
++ The distribution of the data is roughly symmetric and mound shaped
+
+### Testing the affect of supp, delivery method
+Assume Null hypothesis the tooth growth is greater for OJ., 
+Divide the data into two groups, OJ and VC. 
 
 P value is the probablity of observing a test statistic as large as the one calculated assuming H is true.
 
-```{r}
+```{r, warning=FALSE}
 library(dplyr)
 library(magrittr) # for %$% extraction
 
-OJ <- ToothGrowth %>% filter(supp=="OJ")
+OJ <- ToothGrowth %>% filter(supp=="OJ") 
 VC <- ToothGrowth %>% filter(supp=="VC")
 
 t.test(OJ$len, VC$len, alternative = "greater", paired = FALSE, conf.level = 0.95)
 ```
-----
-## There are 3 groups of doses, 0.5, 1, 2
-  Divide the data into 3 groups, OJ and VC and run t test.
-  Test that more dosage leads to longer tooth growth.
+### Testing the affect of dose
+There are 3 groups of doses, 0.5, 1, 2.  Divide the data into 3 groups, OJ and VC and run two t tests.
+Test that more dosage leads to longer tooth growth.
   
 ```{r}
-
 low     <- ToothGrowth %>% filter(dose == 0.5)
 medium  <- ToothGrowth %>% filter(dose == 1)
 high    <- ToothGrowth %>% filter(dose == 2)
 
-t.test( high$len, low$len,alternative = "greater", paired = FALSE, conf.level = 0.95)
-
-t.test(high$len, medium$len,alternative = "greater", paired = FALSE, conf.level = 0.95)$conf.int
+t.test( high$len, low$len,alternative = "greater", paired = FALSE, conf.level = 0.95,Var.equal=FALSE)
+t.test(high$len, medium$len,alternative = "greater", paired = FALSE, conf.level = 0.95,Var.equal=FALSE)
 ```
+##Conclusion
+The p values and confidence intervals returned from the above tests return low p-values conclude:
+Accept Null hypothises that mean tooth length of OJ is statisically significant greater than VC.
+Accept Null hypothises that mean tooth lenght of higher doses is statistically significant greater than lower doeses.  
+
 #Appendix
 
-```{r pressure, echo=FALSE}
+```{r append1, echo=FALSE}
 require(graphics)
 coplot(len ~ dose | supp, data = ToothGrowth, panel = panel.smooth,
        xlab = "ToothGrowth data: length vs dose, given type of supplement")
+```
+
+```{r append2, echo=FALSE}
+# plot densities 
+library(ggplot2)
+library(gridExtra)
+totalS <- rbind(OJ,VC)
+ggplot(totalS, aes(len, fill = supp)) + geom_density(alpha = 0.2)
+
+ToothGrowth2 <- ToothGrowth
+ToothGrowth2$supp <- as.factor(ToothGrowth2$supp)
+p <- ggplot(ToothGrowth2, aes(x=supp, y=len, fill=supp))+
+  geom_violin() + labs(fill = "Supplier") 
+
+#plot distributions of doses
+ToothGrowth2$dose <- as.factor(ToothGrowth2$dose)
+p1 <- ggplot(ToothGrowth2, aes(x=dose, y=len, fill=dose))+
+  geom_violin()  + labs(fill = "Dose (mg)") 
+
+ grid.arrange(p1, p, ncol=2)
 ```

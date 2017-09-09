@@ -9,6 +9,12 @@ p1 = qplot(1:10, rnorm(10))
 p2 = qplot(1:10, rnorm(10))
 grid.arrange(p1, p2, ncol = 2, main = "Main title")
 
+https://stackoverflow.com/questions/3541713/how-to-plot-two-histograms-together-in-r
+
+http://www.sthda.com/english/wiki/ggplot2-title-main-axis-and-legend-titles
+
+https://stackoverflow.com/questions/9360332/how-to-plot-density-plots-with-proportions-on-the-y-axis
+
 
 ## Project Notes
 https://www.youtube.com/watch?v=pTmLQvMM-1M&t=1s
