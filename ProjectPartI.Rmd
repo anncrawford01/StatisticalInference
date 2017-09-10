@@ -14,16 +14,14 @@ framework: io2012
 #  lib: ../../librariesNew
 widgets: mathjax
 ---
-```{r }
+```{r, warning = FALSE }
 # Clear our workspace
 rm(list=ls())
-# dependencies
-install.packages("dplyr",repos = "http://cran.us.r-project.org")
-install.packages("ggplot", repos = "http://cran.us.r-project.org")
-install.packages("gridExtra",repos = "http://cran.us.r-project.org")
-library(ggplot2)
-library(grid)
-library(gridExtra)
+ #dependencies
+#install.packages("dplyr",repos = "http://cran.us.r-project.org")
+#install.packages("ggplot", repos = "http://cran.us.r-project.org")
+#install.packages("gridExtra",repos = "http://cran.us.r-project.org")
+
 ```
 ## Central Limit Theorem 
 The Central Limit Theorem (CLT) states that the distribution of averages of independent and identically distributed (iid) variables becomes that of a **standard normal** as the sample size increases even if the original variables are not normally distrubted.  This document investigates the exponetial distribution and the distribution on the average of 40 exponetials generated using R function rexp.
@@ -32,41 +30,45 @@ $$\frac{\bar X_n - \mu}{\sigma / \sqrt{n}} =
 $$
 
 
-## The sample mean compared to the theoritical mean
+## The sample mean and distribution compared to  to the population  
+The mean of the sampling distribution of means approaches mu (population mean) as n increases.  The graphs below also shows that although the population distribtion is not normal the distribution of sample means is normal with sample mean approaching populatio mean.
 ```{r ,fig.height=3.5,fig.width=8, fig.align='center', echo = FALSE, warning=FALSE}
-
+library(ggplot2)
+library(grid)
+library(gridExtra)
 ## set the seed
 set.seed(1)
 lambda <- 0.2
-m <- 40
-n <- 10000 # sample size
+n <- 40  # sample size
+m <- 1000  # number of simulations
 mean1 <- 1/lambda
 stddv <- 1/ lambda
-expsample <- rexp(m*n,lambda)
+expsample <- rexp(m * n ,lambda)
 
-mm <-data.frame((apply(matrix(expsample,nrow = n/m, ncol= n),1,mean)) )
+mm = NULL
+for (i in 1 : m) mm = c(mm,mean(rexp(n,lambda) ))
+
+mm <-data.frame(mm)
 colnames(mm)= c("x")
 
 expsample <-data.frame(expsample)
 colnames(expsample)= c("x")
+
+xbar <- mean(mm$x)
 
 library(grid)
 library(gridExtra)
     g <- ggplot(mm, aes(x = x))
     g <- g + geom_histogram(bins = 25) 
     g <- g + geom_vline(xintercept = 1/lambda, size = 1, color = "red")
-    g <- g + labs(title = paste('mu = 1/lambda =', 1/lambda ,' n = ', n))
-    g
+    g <- g + labs(title = paste('mu = 1/lambda =', 1/lambda ,' Sample mean = ', xbar ))
 
-    g2 <- ggplot(data.frame(expsample),aes(x = expsample ))
+    g2 <- ggplot(data.frame(expsample),aes(x = x ))
     g2 <- g2 + geom_histogram(bins = 25) 
-    g2 <- g2 + labs(title = paste('Rexp' ,' n = ', n))
-    g2
-    grid.arrange(g, g2, ncol = 2, top = "Exponetial VS means of 40 ")
+    g2 <- g2 + labs(title = paste('Rexp' ))
+    
+    grid.arrange(g, g2, ncol = 2, top = "Exponential dist vs dist of mean, where n= 40 ")
 
 ```
-## The sample variance vs theoritical variance
-
-## Show that the distribution of the sample means is normal
-The histogram shows a distribution with a shape similar to the normal curve. The density proportions shown in the table below are approximately normal.
-
+## The sample variance vs population variance
+The histogram shows a distribution with a shape similar to the normal curve. The variance of the sampling distribution of the sample means is less than population variance and approaches 0 as n goes to infinity.  For n = 40, sample variance for exponentials = `r (1/lambda)^2/n ` 

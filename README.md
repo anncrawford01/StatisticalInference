@@ -15,7 +15,8 @@ http://www.sthda.com/english/wiki/ggplot2-title-main-axis-and-legend-titles
 
 https://stackoverflow.com/questions/9360332/how-to-plot-density-plots-with-proportions-on-the-y-axis
 
-
+## Kanh Academy CTL
+https://www.khanacademy.org/math/statistics-probability/sampling-distributions-library/sample-means/v/central-limit-theorem
 ## Project Notes
 https://www.youtube.com/watch?v=pTmLQvMM-1M&t=1s
 

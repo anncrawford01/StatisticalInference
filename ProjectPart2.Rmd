@@ -2,14 +2,17 @@
 title: "Hypothesis Testing on ToothGrowth Data"
 author: "Ann Crawford"
 date: "September 7, 2017"
-output: pdf_document
+output:
+  word_document: default
+  pdf_document:
+    latex_engine: xelatex
 subtitle: Statistical Inference Project Part II, Class 6 in data science series
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r }
+```{r warning=FALSE, echo=FALSE}
 
 # Clear our workspace
 rm(list=ls())
@@ -24,10 +27,8 @@ library(grid)
 library(gridExtra)
 library(dplyr)
 ```
-```{r setup}
-# Clear our workspace
-rm(list=ls())
-```
+
+
 ## Tooth Growth Data
 The standard R data set, ToothGrowth,  measures the effect of Vitamin C on tooth growth in guinea pigs
 The response is the length of odontoblasts (cells responsible for tooth growth) in 60 guinea pigs. Each animal received one 
@@ -42,23 +43,27 @@ Visually examine the sample data graphs (see Appednix). The graphs lend evidence
 Based on the graphs the following Null hypothesi will be tested: 
 1. Supply using orange juice as the delivery method induces longer tooth growth. 
 2. Increase of vitamin C does induces longer tooth growth.
-* Assumptions for t tests:
-+ Data includes trials from 60 independent guinea pigs. 
-+ Data are iid normal.
-+ The distribution of the data is roughly symmetric and mound shaped
+
+### Assumptions for t tests: 
+Data includes trials from 60 independent guinea pigs. 
+Data are iid normal.
+The distribution of the data is roughly symmetric and mound shaped
+
+The violin graphs indicated varirence differs for each group. 
 
 ### Testing the affect of supp, delivery method
 Assume Null hypothesis the tooth growth is greater for OJ., 
 Divide the data into two groups, OJ and VC. 
 
-P value is the probablity of observing a test statistic as large as the one calculated assuming H is true.
+P value is the probablity of observing a test statistic as large as the one calculated assuming H0 (null hypothesis) is true.
 
 ```{r, warning=FALSE}
 
 OJ <- ToothGrowth %>% filter(supp=="OJ") 
 VC <- ToothGrowth %>% filter(supp=="VC")
 
-t.test(OJ$len, VC$len, alternative = "greater", paired = FALSE, conf.level = 0.95)
+hoOJVCSupp <- t.test(OJ$len, VC$len, alternative = "greater", paired = FALSE, conf.level = 0.95, var.equal = FALSE)
+
 ```
 ### Testing the affect of dose
 There are 3 groups of doses, 0.5, 1, 2.  Divide the data into 3 groups, OJ and VC and run two t tests.
@@ -69,13 +74,19 @@ low     <- ToothGrowth %>% filter(dose == 0.5)
 medium  <- ToothGrowth %>% filter(dose == 1)
 high    <- ToothGrowth %>% filter(dose == 2)
 
-t.test( high$len, low$len,alternative = "greater", paired = FALSE, conf.level = 0.95,Var.equal=FALSE)
-t.test(high$len, medium$len,alternative = "greater", paired = FALSE, conf.level = 0.95,Var.equal=FALSE)
+h0highlowd <- t.test( high$len, low$len,alternative = "greater", paired = FALSE, conf.level = 0.95,Var.equal=FALSE)
+hohighmedd <- t.test(high$len, medium$len,alternative = "greater", paired = FALSE, conf.level = 0.95,Var.equal=FALSE)
 ```
 ##Conclusion
 The p values and confidence intervals returned from the above tests return low p-values conclude:
 Accept Null hypothises that mean tooth length of OJ is statisically significant greater than VC.
-Accept Null hypothises that mean tooth lenght of higher doses is statistically significant greater than lower doeses.  
+Accept Null hypothises that mean tooth lenght of higher doses is statistically significant greater than lower doses.  
+
+H0                            | P-Value | Conf. Interval | accept/reject
+------------------------------|---------|----------------|---------------
+mean OJ - mean VC > 0  | `r hoOJVCSupp$p.value` | `r hoOJVCSupp$conf.int`| accept
+mean dose(2) - mean dose(0.5) > 0  | `r h0highlowd$p.value` | `r h0highlowd$conf.int` | accept
+mean dose(2) - mean dose(1.0) > 0  | `r hohighmedd$p.value `| `r hohighmedd$conf.int `| accept
 
 #Appendix
 
